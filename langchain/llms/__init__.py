@@ -116,7 +116,7 @@ type_to_cls_dict: Dict[str, Type[BaseLLM]] = {
     "huggingface_hub": HuggingFaceHub,
     "huggingface_endpoint": HuggingFaceEndpoint,
     "llamacpp": LlamaCpp,
-    "mlflow": MlflowGateway,
+    "mlflow-gateway": MlflowGateway,
     "modal": Modal,
     "mosaic": MosaicML,
     "sagemaker_endpoint": SagemakerEndpoint,

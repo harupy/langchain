@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any, List, Dict, Mapping
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 import mlflow.gateway
@@ -16,6 +16,18 @@ class MlflowGateway(LLM):
 
         super().__init__(**kwargs)
         mlflow.gateway.set_gateway_uri(self.gateway_uri)
+
+    @property
+    def _default_params(self) -> Dict[str, Any]:
+        return {
+            "gateway_uri": self.gateway_uri,
+            "route": self.route,
+            "temperature": self.temperature,
+        }
+
+    @property
+    def _identifying_params(self) -> Mapping[str, Any]:
+        return self._default_params
 
     def _call(
         self,
@@ -33,5 +45,6 @@ class MlflowGateway(LLM):
         )
         return resp["candidates"][0]["text"]
 
+    @property
     def _llm_type(self) -> str:
         return "mlflow-gateway"

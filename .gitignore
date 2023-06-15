@@ -153,3 +153,6 @@ data_map*
 
 # Replit files
 *replit*
+
+# MLflow
+mlruns

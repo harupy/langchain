@@ -1,3 +1,4 @@
+import mlflow
 from langchain import LLMChain, PromptTemplate
 from langchain.llms import MlflowGateway
 
@@ -13,3 +14,10 @@ llm_chain = LLMChain(
 )
 result = llm_chain.run(adjective="professional")
 print(result)
+
+
+with mlflow.start_run():
+    info = mlflow.langchain.log_model(llm_chain, "model")
+
+model = mlflow.langchain.load_model(info.model_uri)
+print(model.run(adjective="professional"))
