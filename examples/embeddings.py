@@ -6,6 +6,5 @@ embeddings = MlflowGatewayEmbeddings(
     route="embeddings",
 )
 
-
 print(embeddings.embed_query("foo"))
 print(embeddings.embed_documents(["foo"]))
