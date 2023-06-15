@@ -25,6 +25,8 @@ poetry run python examples/embeddings.py
 
 ## Docker (preferred)
 
+All you need is Docker.
+
 ```sh
 # Assuming you're in the repository root
 export OPENAI_API_KEY=...
