@@ -22,6 +22,7 @@ from langchain.embeddings.huggingface_hub import HuggingFaceHubEmbeddings
 from langchain.embeddings.jina import JinaEmbeddings
 from langchain.embeddings.llamacpp import LlamaCppEmbeddings
 from langchain.embeddings.minimax import MiniMaxEmbeddings
+from langchain.embeddings.mlflow_gateway import MlflowGatewayEmbeddings
 from langchain.embeddings.modelscope_hub import ModelScopeEmbeddings
 from langchain.embeddings.mosaicml import MosaicMLInstructorEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -45,6 +46,7 @@ __all__ = [
     "JinaEmbeddings",
     "LlamaCppEmbeddings",
     "HuggingFaceHubEmbeddings",
+    "MlflowGatewayEmbeddings",
     "ModelScopeEmbeddings",
     "TensorflowHubEmbeddings",
     "SagemakerEndpointEmbeddings",
