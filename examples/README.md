@@ -3,6 +3,7 @@
 ```sh
 # Clone this PR branch
 git clone --branch gateway-integration https://github.com/harupy/langchain.git
+cd langchain
 
 # Install dependencies
 poetry install
@@ -28,7 +29,9 @@ poetry run python examples/embeddings.py
 All you need is Docker.
 
 ```sh
-# Assuming you're in the repository root
+git clone --branch gateway-integration https://github.com/harupy/langchain.git
+cd langchain
+
 export OPENAI_API_KEY=...
 docker build -t mlflow-langchain examples
 docker run -it --rm -e OPENAI_API_KEY="$OPENAI_API_KEY" --name mlflow-langchain mlflow-langchain bash
