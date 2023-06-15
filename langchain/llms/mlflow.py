@@ -9,7 +9,10 @@ import mlflow.gateway
 class MlflowGateway(LLM):
     gateway_uri: str
     route: str
-    temperature: float = 0.3
+    temperature: float = 0.0
+    stop: List[str] | None = None
+    max_tokens: int = 0
+    candidate_count: int = 5
 
     def __init__(self, **kwargs: Any):
         import mlflow
@@ -36,13 +39,16 @@ class MlflowGateway(LLM):
         run_manager: CallbackManagerForLLMRun | None = None,
         **kwargs: Any,
     ) -> str:
-        resp = mlflow.gateway.query(
-            self.route,
-            data={
-                "temperature": self.temperature,
-                "prompt": prompt,
-            },
-        )
+        data = {
+            "prompt": prompt,
+            "temperature": self.temperature,
+            "max_tokens": self.max_tokens,
+            "candidate_count": self.candidate_count,
+        }
+        stop = stop or self.stop
+        if stop:
+            data["stop"] = stop
+        resp = mlflow.gateway.query(self.route, data=data)
         return resp["candidates"][0]["text"]
 
     @property
