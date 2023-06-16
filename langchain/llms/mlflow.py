@@ -3,7 +3,6 @@ from functools import lru_cache
 from typing import Any, List, Dict, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
-import mlflow.gateway
 from pydantic import BaseModel, Extra
 from typing import TYPE_CHECKING
 
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
 
 @lru_cache()
 def _client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
+    import mlflow.gateway
+
     return mlflow.gateway.MlflowGatewayClient(gateway_uri)
 
 
