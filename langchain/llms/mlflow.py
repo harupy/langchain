@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Dict, Mapping
+from typing import Any, List, Dict, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 import mlflow.gateway
@@ -11,7 +11,7 @@ class MlflowGateway(LLM):
     route: str
     temperature: float = 0.0
     stop: List[str] | None = None
-    max_tokens: int = 0
+    max_tokens: Optional[int] = None
     candidate_count: int = 5
 
     def __init__(self, **kwargs: Any):
@@ -26,6 +26,9 @@ class MlflowGateway(LLM):
             "gateway_uri": self.gateway_uri,
             "route": self.route,
             "temperature": self.temperature,
+            "stop": self.stop,
+            "max_tokens": self.max_tokens,
+            "candidate_count": self.candidate_count,
         }
 
     @property
