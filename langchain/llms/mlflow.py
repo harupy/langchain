@@ -4,15 +4,20 @@ from typing import Any, List, Dict, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 import mlflow.gateway
+from pydantic import BaseModel, Extra
+
+
+class Params(BaseModel, extra=Extra.allow):
+    temperature: float = 0.0
+    stop: List[str] | None = None
+    max_tokens: Optional[int] = None
+    candidate_count: int = 5
 
 
 class MlflowGateway(LLM):
     gateway_uri: str
     route: str
-    temperature: float = 0.0
-    stop: List[str] | None = None
-    max_tokens: Optional[int] = None
-    candidate_count: int = 5
+    params: Params | None = None
 
     def __init__(self, **kwargs: Any):
         import mlflow
@@ -25,10 +30,7 @@ class MlflowGateway(LLM):
         return {
             "gateway_uri": self.gateway_uri,
             "route": self.route,
-            "temperature": self.temperature,
-            "stop": self.stop,
-            "max_tokens": self.max_tokens,
-            "candidate_count": self.candidate_count,
+            "params": self.params.dict(),
         }
 
     @property
@@ -44,13 +46,11 @@ class MlflowGateway(LLM):
     ) -> str:
         data = {
             "prompt": prompt,
-            "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
-            "candidate_count": self.candidate_count,
+            **self.params.dict(exclude_none=True),
         }
-        stop = stop or self.stop
-        if stop:
-            data["stop"] = stop
+        if s := stop or self.params.stop:
+            data["stop"] = s
+        print(data)
         resp = mlflow.gateway.query(self.route, data=data)
         return resp["candidates"][0]["text"]
 
