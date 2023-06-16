@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @lru_cache()
-def _client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
+def _get_client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
     import mlflow.gateway
 
     return mlflow.gateway.MlflowGatewayClient(gateway_uri)
@@ -58,7 +58,7 @@ class MlflowGateway(LLM):
         }
         if s := stop or self.params.stop:
             data["stop"] = s
-        resp = _client(self.gateway_uri).query(self.route, data=data)
+        resp = _get_client(self.gateway_uri).query(self.route, data=data)
         return resp["candidates"][0]["text"]
 
     @property
