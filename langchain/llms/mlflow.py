@@ -1,10 +1,20 @@
 from __future__ import annotations
-
+from functools import lru_cache
 from typing import Any, List, Dict, Mapping, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 import mlflow.gateway
 from pydantic import BaseModel, Extra
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    import mlflow.gateway
+
+
+@lru_cache()
+def _client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
+    return mlflow.gateway.MlflowGatewayClient(gateway_uri)
 
 
 class Params(BaseModel, extra=Extra.allow):
@@ -20,10 +30,7 @@ class MlflowGateway(LLM):
     params: Params | None = None
 
     def __init__(self, **kwargs: Any):
-        import mlflow
-
         super().__init__(**kwargs)
-        mlflow.gateway.set_gateway_uri(self.gateway_uri)
 
     @property
     def _default_params(self) -> Dict[str, Any]:
@@ -50,8 +57,7 @@ class MlflowGateway(LLM):
         }
         if s := stop or self.params.stop:
             data["stop"] = s
-        print(data)
-        resp = mlflow.gateway.query(self.route, data=data)
+        resp = _client(self.gateway_uri).query(self.route, data=data)
         return resp["candidates"][0]["text"]
 
     @property
