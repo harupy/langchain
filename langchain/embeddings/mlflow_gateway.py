@@ -1,6 +1,6 @@
 from __future__ import annotations
 from functools import lru_cache
-from typing import List, Any, TYPE_CHECKING
+from typing import List, Any, Optional,TYPE_CHECKING
 
 from pydantic import BaseModel
 
@@ -12,15 +12,15 @@ if TYPE_CHECKING:
 
 
 @lru_cache()
-def _get_client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
+def _get_client(gateway_uri: Optional[str]) -> mlflow.gateway.MlflowGatewayClient:
     import mlflow.gateway
 
     return mlflow.gateway.MlflowGatewayClient(gateway_uri)
 
 
 class MlflowGatewayEmbeddings(Embeddings, BaseModel):
-    gateway_uri: str
     route: str
+    gateway_uri: Optional[str]
 
     def __init__(self, **kwargs: Any):
         import mlflow

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @lru_cache()
-def _get_client(gateway_uri: str) -> mlflow.gateway.MlflowGatewayClient:
+def _get_client(gateway_uri: Optional[str]) -> mlflow.gateway.MlflowGatewayClient:
     import mlflow.gateway
 
     return mlflow.gateway.MlflowGatewayClient(gateway_uri)
@@ -26,8 +26,8 @@ class Params(BaseModel, extra=Extra.allow):
 
 
 class MlflowGateway(LLM):
-    gateway_uri: str
     route: str
+    gateway_uri: Optional[str]
     params: Params | None = None
 
     def __init__(self, **kwargs: Any):
