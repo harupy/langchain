@@ -11,6 +11,11 @@ if TYPE_CHECKING:
     import mlflow.gateway
 
 
+def chunk(texts: List[str], size: int) -> List[List[str]]:
+    for i in range(0, len(texts), size):
+        yield texts[i : i + size]
+
+
 @lru_cache()
 def _get_client(gateway_uri: Optional[str]) -> mlflow.gateway.MlflowGatewayClient:
     import mlflow.gateway
@@ -29,11 +34,14 @@ class MlflowGatewayEmbeddings(Embeddings, BaseModel):
         mlflow.gateway.set_gateway_uri(self.gateway_uri)
 
     def _query(self, texts: List[str]) -> List[List[float]]:
-        resp = _get_client(self.gateway_uri).query(
+        embeddings = []
+        for t in chunk(texts, 1000):
+            resp = _get_client(self.gateway_uri).query(
             self.route,
-            data={"text": texts},
+            data={"text": t},
         )
-        return resp["embeddings"]
+            embeddings.append(resp["embeddings"])
+        return embeddings
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         return self._query(texts)
