@@ -35,7 +35,7 @@ class MlflowGatewayEmbeddings(Embeddings, BaseModel):
 
     def _query(self, texts: List[str]) -> List[List[float]]:
         embeddings = []
-        for t in chunk(texts, 1000):
+        for t in chunk(texts, 20):
             resp = _get_client(self.gateway_uri).query(
             self.route,
             data={"text": t},
